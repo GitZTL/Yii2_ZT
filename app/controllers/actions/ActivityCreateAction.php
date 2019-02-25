@@ -38,7 +38,7 @@ class ActivityCreateAction extends Action
                 $activity=\Yii::$app->activity->getModel();
             }
 
-            //$activity->is_blocked=1;
+
             //$activity->title='Заголовок';
 
 
