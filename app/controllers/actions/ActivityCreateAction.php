@@ -13,29 +13,38 @@ use app\components\ActivityComponent;
 use app\models\Activity;
 use yii\base\Action;
 use yii\base\Model;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 class ActivityCreateAction extends Action
 {
     public $myName;
 
-    public function run(){
+    public function run()
+    {
 
+            $comp=\Yii::$app->activity;
 
-            //$activity = new Activity();
-            //$activity=\Yii::$app->activity->getModel(\Yii::$app->request->post());
-            //echo $this->myName; exit;
-
-
-
-            if(\Yii::$app->request->isPost){
+            if(\Yii::$app->request->isPost)
+            {
                 /** @var ActivityComponent $comp*/
-                $comp=\Yii::$app->activity;
-                $activity=$comp->getModel(\Yii::$app->request->post());
-                $comp->createActivity($activity);
+                    $activity=$comp->getModel(\Yii::$app->request->post());
+                    $activity->setScenario($activity::SCENARIO_CUSTOM);
+                if(\Yii::$app->request->isAjax){
+                    \Yii::$app->response->format=Response::FORMAT_JSON;
+
+                    return ActiveForm::validate($activity);
+                }
+
+
+                    if($comp->createActivity($activity)) {
+
+                        return $this->controller->render('create_confirm', ['activity' => $activity]);
+                    }
 
                 //$activity->validate();
             }else{
-                $activity=\Yii::$app->activity->getModel();
+                $activity=$comp->getModel();
             }
 
             //$activity->is_blocked=1;
