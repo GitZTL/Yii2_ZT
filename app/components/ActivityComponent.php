@@ -28,6 +28,26 @@ class ActivityComponent extends Component
 
     public function createActivity(&$model):bool{
 
-        return $model->validate();
+        if ($model->validate()) {
+
+            $path = $this->getPathSaveFile();
+            $name = mt_rand(0, 999) . time() . '.' . $model->image->getExtension();
+            $model->image->saveAs($path.$name);
+
+            if (!$model->image->saveAs($path . $name)) {
+                $model->addError('image', 'Неудачная попытка переместить файл');
+                return false;
+            }
+            //$model->image=$name;
+            return true;
+
+        }
     }
+
+        private function getPathSaveFile()
+        {
+
+            return \Yii::getAlias('@app/files/');
+        }
+
 }
