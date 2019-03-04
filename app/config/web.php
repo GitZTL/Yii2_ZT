@@ -30,11 +30,18 @@ $config = [
             'activity_class'=>'app\models\Activity'
         ],
 
+        'auth'=>\app\components\UsersAuthComponent::class,
+
+
+        'dao'=>[
+            'class'=>\app\components\DAOComponent::class
+        ],
+
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [

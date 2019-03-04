@@ -29,7 +29,7 @@ class Activity extends Model
     public $image;
 
 
-    const SCENARIO_CUSTOM='custom_sc';
+    //const SCENARIO_CUSTOM='custom_sc';
 
 
 
@@ -38,9 +38,9 @@ class Activity extends Model
         $this->loadFile();
         if(!empty($this->date_start)){
 
-            $this->date_start=\DateTime::createFromFormat('d.m.y.',$this->date_start);
+            $this->date_start=\DateTime::createFromFormat('d.m.Y.',$this->date_start);
 
-            if($this->date_start){
+           if($this->date_start){
                 $this->date_start=$this->date_start->format('Y-m-d');
             }
         }
@@ -59,8 +59,9 @@ class Activity extends Model
             ['title', 'string', 'max' => 150, 'min' =>2],
             [['title'], 'required'],
             ['title','trim'],
-            //['title', 'notAdmin'],
-            ['title', NotAdminRule::class, 'on'=>self::SCENARIO_CUSTOM],
+            ['title', 'notAdmin'],
+            //['title', NotAdminRule::class],
+            //['title', NotAdminRule::class, 'on'=>self::SCENARIO_CUSTOM],
             [['is_blocked', 'use_notification'], 'boolean'],
             ['is_repeated', 'boolean'],//флаг повторяющегося события
             ['email', 'email'],
@@ -68,18 +69,18 @@ class Activity extends Model
                 return $model->use_notification?true:false;
             }, 'message'=>'Поле email должно быть обязательно заполнено!'],
             ['email_repeat', 'compare', 'compareAttribute'=>'email', 'message'=>'email должен совпадать с полем выше!'], //'compareValue'=>'20';
-            //['date_start', 'date', 'format'=> 'php:Y-m-d', 'message'=>'Формат даты должен быть dd.mm.yyyy'],
+            ['date_start', 'date', 'format'=> 'php:Y-m-d', 'message'=>'Формат даты должен быть dd.mm.yyyy'],
             ['as_repeat', 'in', 'range'=> [0,1,2,3]],
             ['image', 'file', 'extensions'=>['jpg','png','img']],
         ];
     }
 
 
-   // public function notAdmin($attribute,$value){
-    //    if($this->$attribute=='admin'){
-       //     $this->addError($attribute, 'Заголовок события не должен быть '.$this->$attribute);
-      //  }
-    //}
+   public function notAdmin($attribute,$value){
+        if($this->$attribute=='admin'){
+           $this->addError($attribute, 'Заголовок события не должен быть '.$this->$attribute);
+        }
+    }
 
     public function attributeLabels(){
         return[

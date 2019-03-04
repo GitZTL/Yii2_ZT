@@ -27,8 +27,8 @@ class ActivityComponent extends Component
     }
 
     public function createActivity(&$model):bool{
-
-        if ($model->validate()) {
+        return $model->validate();
+        //if ($model->validate()) {
 
             $path = $this->getPathSaveFile();
             $name = mt_rand(0, 999) . time() . '.' . $model->image->getExtension();
@@ -42,7 +42,7 @@ class ActivityComponent extends Component
             return true;
 
         }
-    }
+    //}
 
         private function getPathSaveFile()
         {
