@@ -9,22 +9,34 @@
 namespace app\models;
 
 
+use app\behaviours\GetDateFunctionFormatBehaviour;
 use app\models\rules\NotAdminRule;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
-class Activity extends Model
+class Activity extends ActivityBase
 {
-    public $title;
-    public $description;
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class'=>GetDateFunctionFormatBehaviour::class,
+                'attribute_name'=>'date_created'
+            ]
+        ];
+    }
+
+    //public $title;
+    //public $description;
     public $date_start;
-    public $is_blocked;
-    public $is_repeated;
+    //public $is_blocked;
+    //public $is_repeated;
 
     public $email;
     public $email_repeat;
-    public $use_notification;
-    public $as_repeat;
+    //public $use_notification;
+    //public $as_repeat;
 
     public $image;
 
@@ -55,7 +67,7 @@ class Activity extends Model
 
     public function rules()
     {
-        return [
+        return array_merge([
             ['title', 'string', 'max' => 150, 'min' =>2],
             [['title'], 'required'],
             ['title','trim'],
@@ -72,7 +84,7 @@ class Activity extends Model
             ['date_start', 'date', 'format'=> 'php:Y-m-d', 'message'=>'Формат даты должен быть dd.mm.yyyy'],
             ['as_repeat', 'in', 'range'=> [0,1,2,3]],
             ['image', 'file', 'extensions'=>['jpg','png','img']],
-        ];
+        ],parent::rules());
     }
 
 

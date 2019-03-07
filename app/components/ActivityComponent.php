@@ -9,6 +9,8 @@
 namespace app\components;
 
 
+use app\models\Activity;
+use app\models\ActivitySearch;
 use yii\base\Component;
 
 class ActivityComponent extends Component
@@ -24,6 +26,14 @@ class ActivityComponent extends Component
         }
 
         return $model;
+    }
+
+    /**
+     * @param $id
+     * @return Activity|array|\Yii\db\ActiveRecord|null
+     */
+    public function getActivity($id){
+       return $this->getModel()::find()->andWhere(['id'=>$id])->one();
     }
 
     public function createActivity(&$model):bool{
@@ -48,6 +58,18 @@ class ActivityComponent extends Component
         {
 
             return \Yii::getAlias('@app/files/');
+        }
+
+    /**
+     * @param $params
+     * @return \yii\data\ActiveDataProvider
+     */
+        public function getSearchProvider($params){
+
+            $model=new ActivitySearch();
+
+            return $model->getDataProvider();
+
         }
 
 }

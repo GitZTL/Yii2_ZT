@@ -13,6 +13,7 @@ use app\components\ActivityComponent;
 use app\models\Activity;
 use yii\base\Action;
 use yii\base\Model;
+use yii\web\HttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
@@ -22,7 +23,9 @@ class ActivityCreateAction extends Action
 
     public function run()
     {
-
+        if(!\Yii::$app->rbac->canCreateActivity()){
+            throw new HttpException(403, 'Увы, нет доступа к созданию. Совсем.');
+        }
             $comp=\Yii::$app->activity;
 
             if(\Yii::$app->request->isPost)
@@ -38,7 +41,7 @@ class ActivityCreateAction extends Action
 
 
                     if($comp->createActivity($activity)) {
-
+                        //return $this->controller->redirect(['/activity/view', 'id'=>$activity->id]);
                         return $this->controller->render('create_confirm', ['activity' => $activity]);
                     }
 
