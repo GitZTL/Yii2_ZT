@@ -17,8 +17,8 @@ use yii\bootstrap\ActiveForm;
         <?php $form=ActiveForm::begin();?>
         <?=$form->field($activity, 'title');?>
         <?=$form->field($activity, 'description')->textarea();?>
-        <?=$form->field($activity, 'email', ['enableAjaxValidation'=>true],
-            ['enableClientValidation'=>false]);?>
+        <?=$form->field($activity, 'email', ['enableAjaxValidation'=>true,
+            'enableClientValidation'=>false]);?>
         <?=$form->field($activity, 'image')->fileInput()?>
         <?=$form->field($activity, 'email_repeat');?>
         <?=$form->field($activity, 'use_notification')->checkbox()?>

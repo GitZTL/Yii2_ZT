@@ -9,6 +9,8 @@
 namespace app\components;
 
 
+use app\models\Activity;
+use app\models\ActivitySearch;
 use yii\base\Component;
 
 class ActivityComponent extends Component
@@ -26,9 +28,17 @@ class ActivityComponent extends Component
         return $model;
     }
 
-    public function createActivity(&$model):bool{
+    /**
+     * @param $id
+     * @return Activity|array|\Yii\db\ActiveRecord|null
+     */
+    public function getActivity($id){
+       return $this->getModel()::find()->andWhere(['id'=>$id])->one();
+    }
 
-        if ($model->validate()) {
+    public function createActivity(&$model):bool{
+        return $model->validate();
+        //if ($model->validate()) {
 
             $path = $this->getPathSaveFile();
             $name = mt_rand(0, 999) . time() . '.' . $model->image->getExtension();
@@ -42,12 +52,24 @@ class ActivityComponent extends Component
             return true;
 
         }
-    }
+    //}
 
         private function getPathSaveFile()
         {
 
             return \Yii::getAlias('@app/files/');
+        }
+
+    /**
+     * @param $params
+     * @return \yii\data\ActiveDataProvider
+     */
+        public function getSearchProvider($params){
+
+            $model=new ActivitySearch();
+
+            return $model->getDataProvider();
+
         }
 
 }
