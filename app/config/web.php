@@ -21,7 +21,15 @@ $config = [
         ],
     ],
     'components' => [
+       'formatter'=>[
+            //'class'=>'\yii\i18n\Formatter::class',
+           //'dateFormat'=>'php:d.m.Y'
+        ],
+        
+        'rbac'=>\app\components\RbacComponent::class,
+
         'request' => [
+            'as logme'=>\app\behaviours\LogMyBehaviour::class,
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'U1WmTOxNzQAeZK2DHbezURFPyicwgc6p',
         ],
@@ -30,11 +38,23 @@ $config = [
             'activity_class'=>'app\models\Activity'
         ],
 
+        'auth'=>\app\components\UsersAuthComponent::class,
+
+
+        'dao'=>[
+            'class'=>\app\components\DAOComponent::class
+        ],
+
+        'authManager'=>[
+
+            'class'=>'yii\rbac\DbManager'
+        ],
+
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
