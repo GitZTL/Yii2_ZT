@@ -22,6 +22,36 @@ $config = [
             'class'=>'yii\rbac\DbManager'
         ],
 
+        'formatter'=>[
+            'class'=>'\yii\i18n\Formatter',
+            'dateFormat'=>'php:d.m.Y',
+            'dateTimeFormat'=>'php:d.m.Y H:i'
+        ],
+
+        'activity'=>[
+            'class'=>\app\components\ActivityComponent::class,
+            'activity_class'=>'app\models\Activity'
+        ],
+
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' =>false,
+            'enableSwiftMailerLogging'=>true,
+            'transport'=>[
+                'class'=>'Swift_SmtpTransport',
+                'host'=>'smtp.yandex.ru',//указать smtp server
+                'username'=>'ivankot@yandex.ru',
+                'password'=>'pass here', //добавить пароль
+                'port'=>'587', //защищенное подключение
+                'encryption'=>'tls'
+
+            ]
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
+            //'useFileTransport' => true,  //true - значит будет сохранять письмо в файл
+        ],
+
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],

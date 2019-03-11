@@ -10,6 +10,8 @@ namespace app\components;
 
 
 use yii\base\Component;
+use yii\caching\DbDependency;
+use yii\caching\TagDependency;
 use yii\data\Sort;
 use yii\db\Exception;
 use yii\db\Query;
@@ -29,24 +31,28 @@ class DAOComponent extends Component
     public function getAllUsers(){
         $sql='select * from users';
 
-        return $this->getDb()->createCommand($sql)->queryAll();
+        return $this->getDb()->createCommand($sql)->cache()->queryAll();
     }
 
     public function getActivityUser($id=2){
 
         $sql='select * from activity where user_id=:user';
-        return $this->getDb()->createCommand($sql, [':user'=>(int)$id])->queryAll(); //безопасно, делать так!!!
+        return $this->getDb()->createCommand($sql, [':user'=>(int)$id])->cache(15)->queryAll(); //безопасно, делать так!!!
 
     }
 
     public function getFirstActivity(){
         $sql='select * from activity limit 5';
-        return $this->getDb()->createCommand($sql)->queryOne();//не зависимо от того, сколько записей вернется, выводим одну только
+        TagDependency::invalidate(\Yii::$app->cache, 'tag_cache');
+        return $this->getDb()->createCommand($sql)
+            ->cache(10, new DbDependency(['sql'=>'select max(id) from activity;']))
+            ->queryOne();//не зависимо от того, сколько записей вернется, выводим одну только
     }
 
     public function countNotificationActivity(){
         $sql='select count(id) from activity where use_notification=1'; //запрос агрегации
-        return $this->getDb()->createCommand($sql)->queryScalar(); //т.к получим просто число
+        return $this->getDb()->createCommand($sql)->cache(null,
+            new TagDependency(['tags'=>'tag_cache']))->queryScalar(); //т.к получим просто число
     }
 
     public function getAllActivityUser($id_user)
@@ -60,6 +66,7 @@ class DAOComponent extends Component
             ->andWhere('a.date_created<=:date', [':date' => date('Y-m-d H:i:s')])
             ->orderBy(['a.id' => SORT_DESC])
             ->limit(10)
+            ->cache(50)
             //->all(); //чтобы сделать запрос
            // ->createCommand()->sql; //вернет подготовленный запрос
             ->createCommand()->rawSql;//как выглядит с подставенными значениями

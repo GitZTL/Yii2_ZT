@@ -72,4 +72,17 @@ class ActivityComponent extends Component
 
         }
 
+    /**
+     * получение списка сегодняшних событий
+     * @return Activity[]
+     */
+        public function getActivityToday(){
+            $activities=Activity::find()->andWhere('timeStart>=:date',[':date'=>date('Y-m-d')])
+            ->andWhere(['use_notification'=>1])->all();
+
+            return $activities;
+        }
+
+
+
 }
